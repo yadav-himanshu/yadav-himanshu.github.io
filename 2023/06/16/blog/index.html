@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Demystifying path.join() and path.resolve() in Node.js | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="In Node.js, managing file paths is a common task, and the path module provides two powerful methods for handling paths: path.join() and path.resolve(). Although they have similar use cases, there are">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Demystifying path.join() and path.resolve() in Node.js">
+<meta property="og:url" content="http://example.com/2023/06/16/blog/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="In Node.js, managing file paths is a common task, and the path module provides two powerful methods for handling paths: path.join() and path.resolve(). Although they have similar use cases, there are">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-06-16T11:15:10.000Z">
+<meta property="article:modified_time" content="2023-06-16T12:41:40.596Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Node.js, JavaScript">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-blog" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/06/16/blog/" class="article-date">
+  <time class="dt-published" datetime="2023-06-16T11:15:10.000Z" itemprop="datePublished">2023-06-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Demystifying path.join() and path.resolve() in Node.js
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>In Node.js, managing file paths is a common task, and the path module provides two powerful methods for handling paths: path.join() and path.resolve(). Although they have similar use cases, there are key differences between the two. Let’s explore path.join() and path.resolve() and understand when to use each method.</p>
+<h1 id="path-join"><a href="#path-join" class="headerlink" title="path.join()"></a>path.join()</h1><p>The path.join() method joins all given path segments together using the platform-specific separator as a delimiter, then normalizes the resulting path.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//Example</span><br><span class="line">const path = require(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"></span><br><span class="line">const filePath = path.join(<span class="string">&#x27;/my&#x27;</span>, <span class="string">&#x27;folder&#x27;</span>, <span class="string">&#x27;file.txt&#x27;</span>);</span><br><span class="line">console.log(filePath);</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//output</span><br><span class="line"></span><br><span class="line">/my/folder/file.txt</span><br></pre></td></tr></table></figure>
+<p>The method automatically takes care of the correct path separator based on the platform, making it easier to handle paths in a cross-platform manner.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//Example</span><br><span class="line">const path = require(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"></span><br><span class="line">const parentPath = <span class="string">&#x27;/my/folder&#x27;</span>;</span><br><span class="line">const childPath = <span class="string">&#x27;../file.txt&#x27;</span>;</span><br><span class="line">const absolutePath = path.join(parentPath, childPath);</span><br><span class="line">console.log(absolutePath);</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//output</span><br><span class="line">/my/file.txt</span><br></pre></td></tr></table></figure>
+<p>This behavior ensures that you obtain the correct absolute path, regardless of the current working directory.</p>
+<h1 id="path-resolve"><a href="#path-resolve" class="headerlink" title="path.resolve()"></a>path.resolve()</h1><p>On the other hand, path.resolve() is used to obtain the absolute path of a given set of path segments. It resolves an array of path segments into an absolute path, considering the current working directory.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//Example</span><br><span class="line">const path = require(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"></span><br><span class="line">const absolutePath = path.resolve(<span class="string">&#x27;/my&#x27;</span>, <span class="string">&#x27;folder&#x27;</span>, <span class="string">&#x27;file.txt&#x27;</span>);</span><br><span class="line">console.log(absolutePath);</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//output</span><br><span class="line">/my/folder/file.txt</span><br></pre></td></tr></table></figure>
+<p>Notice that path.resolve() creates an absolute path regardless of the current working directory, providing a consistent result.</p>
+<p>Furthermore, path.resolve() is capable of resolving relative path segments. Consider the following example:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//Example</span><br><span class="line">const path = require(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"></span><br><span class="line">const currentDir = <span class="string">&#x27;/my/folder&#x27;</span>;</span><br><span class="line">const relativePath = <span class="string">&#x27;./file.txt&#x27;</span>;</span><br><span class="line">const absolutePath = path.resolve(currentDir, relativePath);</span><br><span class="line">console.log(absolutePath);</span><br></pre></td></tr></table></figure>
+<p>In this case, path.resolve() resolves the relative relativePath with respect to the currentDir and returns the absolute path:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//output</span><br><span class="line">/my/folder/file.txt</span><br></pre></td></tr></table></figure>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>path.join() combines path segments and handles cross-platform compatibility, while path.resolve() obtains absolute paths with consideration for the current working directory. These methods are crucial for effective file path management in Node.js</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/06/16/blog/" data-id="cliyvnen7000003pf4pbi46mw" data-title="Demystifying path.join() and path.resolve() in Node.js" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js-JavaScript/" rel="tag">Node.js, JavaScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2023/06/16/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Demystifying path.join() and path.resolve() in Node.js</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js-JavaScript/" rel="tag">Node.js, JavaScript</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Node-js-JavaScript/" style="font-size: 10px;">Node.js, JavaScript</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/06/">June 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/06/16/blog/">Demystifying path.join() and path.resolve() in Node.js</a>
+          </li>
+        
+          <li>
+            <a href="/2023/06/16/hello-world/">Demystifying path.join() and path.resolve() in Node.js</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
